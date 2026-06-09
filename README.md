@@ -11,8 +11,8 @@
 
 <!-- What topic or category of knowledge does your system cover?
      Why is this knowledge valuable, and why is it hard to find through official channels?
-     Example: "Student reviews of CS professors at [university] — useful because official
-     course descriptions don't reflect teaching style, exam difficulty, or workload." -->
+     Tips and tricks for solo traveling. Helpful because there is alot if information online that can be overwhelming to go through.
+      -->
 
 ---
 
@@ -24,16 +24,17 @@
 
 | # | Source | Type | URL or file path |
 |---|--------|------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 | “Solo Travel, Together” Might Just Be Our Favorite New Trip Idea | Article | documents/“Solo Travel, Together” Might Just Be Our Favorite New Trip Idea.txt
+| 2 | 17 Best Solo Travel Destinations Worldwide | Article | documents/17 Best Solo Travel Destinations Worldwide.txt
+| 3 | 5 Reasons Solo Travel is Worth It | Article | documents/5 Reasons Solo Travel is Worth It.txt
+| 4 | How To Travel Alone And Enjoy It (And It’s Much Easier Than You Think) | Article | documents/How To Travel Alone And Enjoy It (And It’s Much Easier Than You Think).txt
+| 5 | How to Travel Alone for the First time | Article | documents/How to Travel Alone for the First time.txt
+| 6 | I Traveled Around the World Alone and Without a Plan—Here's My No. 1 Tip for Solo Travelers | Article | documents/I Traveled Around the World Alone and Without a Plan—Here's My No. 1 Tip for Solo Travelers.txt
+| 7 | r_solotravel's Introduction to Basic Trip Planning | Reddit (r/solotravel) | documents/r_solotravel's Introduction to Basic Trip Planning.txt
+| 8 | Solo travel - Zimbabwe & Zambia | Reddit (r/solotravel) | documents/Solo travel - Zimbabwe & Zambia.txt
+| 9 | Solo Travel Tips for First Timers | Reddit (r/solotravel) | documents/Solo Travel Tips for First Timers.txt
+| 10 | What are the fun unusual things you do while solo traveling? | Reddit (r/solotravel) | documents/What are the fun unusual things you do while solo traveling_.txt
+| 11 | Why Travelling Alone Will Change You Forever | Article | documents/Why Travelling Alone Will Change You Forever.txt
 
 ---
 

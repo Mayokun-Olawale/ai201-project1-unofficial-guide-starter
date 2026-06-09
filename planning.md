@@ -10,6 +10,7 @@
 ## Domain
 
 <!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+<!-- Tips and tricks for solo traveling. Helpful because there is alot if information online that can be overwhelming to go through. -->
 
 ---
 
@@ -18,50 +19,70 @@
 <!-- List your specific sources: URLs, subreddit names, forum threads, or file descriptions.
      Aim for at least 10 sources that together cover different subtopics or perspectives within your domain. -->
 
-| # | Source | Description | URL or location |
-|---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| # | Source | Type | URL or file path |
+|---|--------|------|-----------------|
+| 1 | “Solo Travel, Together” Might Just Be Our Favorite New Trip Idea | Article | documents/“Solo Travel, Together” Might Just Be Our Favorite New Trip Idea.txt
+| 2 | 17 Best Solo Travel Destinations Worldwide | Article | documents/17 Best Solo Travel Destinations Worldwide.txt
+| 3 | 5 Reasons Solo Travel is Worth It | Article | documents/5 Reasons Solo Travel is Worth It.txt
+| 4 | How To Travel Alone And Enjoy It (And It’s Much Easier Than You Think) | Article | documents/How To Travel Alone And Enjoy It (And It’s Much Easier Than You Think).txt
+| 5 | How to Travel Alone for the First time | Article | documents/How to Travel Alone for the First time.txt
+| 6 | I Traveled Around the World Alone and Without a Plan—Here's My No. 1 Tip for Solo Travelers | Article | documents/I Traveled Around the World Alone and Without a Plan—Here's My No. 1 Tip for Solo Travelers.txt
+| 7 | r_solotravel's Introduction to Basic Trip Planning | Reddit (r/solotravel) | documents/r_solotravel's Introduction to Basic Trip Planning.txt
+| 8 | Solo travel - Zimbabwe & Zambia | Reddit (r/solotravel) | documents/Solo travel - Zimbabwe & Zambia.txt
+| 9 | Solo Travel Tips for First Timers | Reddit (r/solotravel) | documents/Solo Travel Tips for First Timers.txt
+| 10 | What are the fun unusual things you do while solo traveling? | Reddit (r/solotravel) | documents/What are the fun unusual things you do while solo traveling_.txt
+| 11 | Why Travelling Alone Will Change You Forever | Article | documents/Why Travelling Alone Will Change You Forever.txt
+
 
 ---
 
 ## Chunking Strategy
 
-<!-- How will you split documents into chunks?
+<!-- How will you split documents into chunks? 
      State your chunk size (in tokens or characters), overlap size, and explain why those
      numbers fit the structure of your documents.
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
 **Chunk size:**
+I plan to split the documents into 200 token chunks 
 
 **Overlap:**
+A 25 token overlap
 
 **Reasoning:**
+This is because the documents are a combination of long articles and short reddit posts so I want a number that can try to accurately capture these difference
 
 ---
 
 ## Retrieval Approach
 
 <!-- Which embedding model are you using (e.g., all-MiniLM-L6-v2 via sentence-transformers)?
-     How many chunks will you retrieve per query (top-k)?
+     How many chunks will you retrieve per query (top-k)? 5
      If you were deploying this for real users and cost wasn't a constraint, what tradeoffs
      would you weigh in choosing a different embedding model — context length, multilingual
      support, accuracy on domain-specific text, latency? -->
 
 **Embedding model:**
-
+I used `all-MiniLM-L6-v2` (sentence-transformers). This model provides compact
+384-dimensional embeddings with a good balance of speed, cost, and semantic
+accuracy for short-to-medium-length articles and Reddit posts.
 **Top-k:**
-
+5
 **Production tradeoff reflection:**
 
+- **Accuracy vs cost:** If cost wasn't a constraint, I'd choose a higher-capacity
+     model (e.g., `all-mpnet-base-v2` or a large commercial embedding like
+     `text-embedding-3-large`) for better semantic matching on domain-specific text.
+- **Context length:** For very long documents, prioritize chunking and retrieval
+     strategy (larger chunks, overlap) or use models that support longer contexts.
+- **Multilingual support:** Use multilingual embeddings (LaBSE, multilingual MPNet)
+     if content or users are multilingual.
+- **Latency & storage:** Larger embeddings increase latency, storage, and index
+     size; balance with approximate nearest neighbor settings (HNSW/FAISS) and
+     possible hybrid retrieval (cheap model for recall + expensive model for rerank).
+- **Recommendation:** Start with `all-MiniLM-L6-v2` for development, evaluate
+     retrieval quality on held-out Q&A, and upgrade to a higher-capacity or
+     multilingual model if accuracy requirements demand it.
 ---
 
 ## Evaluation Plan
@@ -71,13 +92,27 @@
      is right or wrong. "What are good dining halls?" is too vague.
      "What do students say about wait times at [dining hall name] during lunch?" is testable. -->
 
-| # | Question | Expected answer |
-|---|----------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+Question 1
+Question: How should I chose where to travle
+Expected Answer: Something along the line of picking based on one's interests(maybe including a list of places based on interests)
+
+Question 2
+Question: if I am from the United States, where should my first international solo trip
+Expected Answer: Canada or Mexico
+
+Question 3
+Question: Which continent is very popular for solo trips
+Expected Answer: Europe
+
+Question 4
+Question: Could you give me an itenerary for naviagting Ghana for the first time
+Expected Answer: Should refuse to answer or give an incorrect answer
+
+Question 5
+Question: Can i do a solo trip while traveling with someone
+Expected Answer: Yes, mention artcile about "Solo Travel Together"
+
+
 
 ---
 
@@ -87,9 +122,9 @@
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. A lot of hallucination especially for questions that are outside the contexts of the articles written
 
-2.
+2. Irrelevant information: Because of the diverse length of articles, the chunks sizes are not optimal for all the documents which could lead to a bad retrival
 
 ---
 
@@ -100,6 +135,27 @@
      Label each stage with the tool or library you're using.
      You can use ASCII art, a Mermaid diagram, or embed a sketch as an image.
      You'll use this diagram as context when prompting AI tools to implement each stage. -->
+
+```text
+Document Ingestion
+     [Python file reads from documents/]
+                    |
+                    v
+Chunking
+     [Token-based splitter: 200 tokens + 25 token overlap]
+                    |
+                    v
+Embedding + Vector Store
+     [sentence-transformers: all-MiniLM-L6-v2 + FAISS]
+                    |
+                    v
+Retrieval
+     [Top-k = 5 similarity search]
+                    |
+                    v
+Generation
+     [LLM prompt with retrieved chunks + grounded answer/citations]
+```
 
 ---
 
@@ -116,6 +172,7 @@
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
+
 
 **Milestone 4 — Embedding and retrieval:**
 
