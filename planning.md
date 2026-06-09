@@ -44,7 +44,7 @@
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
 **Chunk size:**
-I plan to split the documents into 200 token chunks 
+I plan to split the documents into 100 token chunks. Decided to change from 200 to 100 tokens because I saw that the chunks were really large and contained multiple topics within one chunk.
 
 **Overlap:**
 A 25 token overlap
@@ -142,7 +142,7 @@ Document Ingestion
                     |
                     v
 Chunking
-     [Token-based splitter: 200 tokens + 25 token overlap]
+     [Token-based splitter: 100 tokens + 25 token overlap]
                     |
                     v
 Embedding + Vector Store
@@ -172,8 +172,10 @@ Generation
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
+- I plan to use Copilot to Implement the Ingestion.py file that reads the files from the documents, chunks it and returns it for embedding. I plan on using the chunking strategy and diagram from the planning.md file. I expect it to produce a fully functioning class for chucking documents. I will verfiy the output matches my spec by asking it to generate 10 random chucks and seeing if what is generated natches my spec.
 
 
 **Milestone 4 — Embedding and retrieval:**
+
 
 **Milestone 5 — Generation and interface:**
