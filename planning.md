@@ -93,7 +93,7 @@ accuracy for short-to-medium-length articles and Reddit posts.
      "What do students say about wait times at [dining hall name] during lunch?" is testable. -->
 
 Question 1
-Question: How should I chose where to travle
+Question: How should I chose where to travel
 Expected Answer: Something along the line of picking based on one's interests(maybe including a list of places based on interests)
 
 Question 2

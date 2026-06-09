@@ -15,7 +15,7 @@ CHROMA_COLLECTION = "solo_travel"
 CHROMA_PATH = "./chroma_db"
 
 # --- Retrieval ---
-N_RESULTS = 3
+N_RESULTS = 4
 
 # --- Documents ---
 DOCS_PATH = "./documents"
