@@ -122,14 +122,14 @@ The UI has a section for where the information is derived and each sentence also
 - Expected answer: Pick based on interests, timeframe, budget; list places by interest
 - System response: When choosing where to travel, consider your interests and personal attributes, as well as your timeframe and budget (r_solotravel's Introduction to Basic Trip Planning.txt). You can also look to popular guidebook series like Lonely Planet, the Rough Guide, and Rick Steves' Europe for recommended itineraries (r_solotravel's Introduction to Basic Trip Planning.txt). Additionally, consider your hobbies, skills you'd like to learn, historical events or cultural practices you're interested in, and cuisine you'd like to try (r_solotravel's Introduction to Basic Trip Planning.txt). It's also a good idea to be conservative with your first trip and consider the safety of the area, as the author of Solo travel - Zimbabwe & Zambia.txt advises against visiting certain areas alone. (Sources: `r_solotravel's Introduction to Basic Trip Planning.txt`, `Solo travel - Zimbabwe & Zambia.txt`)
 - Retrieval quality: Relevant
-- Response accuracy: Partially accurate
+- Response accuracy: Accurate
 
 -### Question 2
 - Question: What are some things I can do in Japan?
 - Expected answer: Include visiting spots mentioned in the articles (e.g., Shibuya, Shinjuku)
 - System response: In Japan, some things you can do include visiting spots like Shibuya, Shinjuku, and Ikebukuro, as mentioned in [Source: 17 Best Solo Travel Destinations Worldwide.txt]. Additionally, you can try the local cuisine, explore the efficient transportation system, and experience the respectful and polite culture, as noted in the same source. However, for more specific and unusual activities, the provided documents do not offer detailed information about Japan. (Source: `17 Best Solo Travel Destinations Worldwide.txt`)
 - Retrieval quality: Relevant
-- Response accuracy: Partially accurate
+- Response accuracy: Accurate
 
 -### Question 3
 - Question: What cities can I visit in Europe and what can I do in those cities?
@@ -190,7 +190,7 @@ I noticed that for the implementation of the embedding.py, the spec wasn't very 
 
 - *What I gave the AI:* My `planning.md` file and my documents folder, and examples of how I wanted the AI Tool Plan written.
 - *What it produced:* It helped gave me a more specific chunking plan for the solo travel corpus.
-- *What I changed or overrode:* I made the document paths consistent and readjusted the formatting.
+- *What I changed or overrode:* I made the document paths consistent and readjusted the formatting. 
 
 **Instance 2**
 
