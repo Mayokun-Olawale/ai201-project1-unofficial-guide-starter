@@ -95,22 +95,28 @@ accuracy for short-to-medium-length articles and Reddit posts.
 Question 1
 Question: How should I chose where to travel
 Expected Answer: Something along the line of picking based on one's interests(maybe including a list of places based on interests)
+Actual Answer: When choosing where to travel, consider your interests and personal attributes, as well as your timeframe and budget (r_solotravel's Introduction to Basic Trip Planning.txt). You can also look to popular guidebook series like Lonely Planet, the Rough Guide, and Rick Steves' Europe for recommended itineraries (r_solotravel's Introduction to Basic Trip Planning.txt). Additionally, consider your hobbies, skills you'd like to learn, historical events or cultural practices you're interested in, and cuisine you'd like to try (r_solotravel's Introduction to Basic Trip Planning.txt). It's also a good idea to be conservative with your first trip and consider the safety of the area, as the author of Solo travel - Zimbabwe & Zambia.txt advises against visiting certain areas alone.
 
 Question 2
-Question: if I am from the United States, where should my first international solo trip
-Expected Answer: Canada or Mexico
+Question: what are some things i can do in japan
+Expected Answer: Include visiting spots as mentioned in one of the articles
+Actual Answer: In Japan, some things you can do include visiting spots like Shibuya, Shinjuku, and Ikebukuro, as mentioned in [Source: 17 Best Solo Travel Destinations Worldwide.txt]. Additionally, you can try the local cuisine, explore the efficient transportation system, and experience the respectful and polite culture, as noted in the same source. However, for more specific and unusual activities, the provided documents do not offer detailed information about Japan.
 
 Question 3
-Question: Which continent is very popular for solo trips
-Expected Answer: Europe
+Question: What cities can i visit in europe and what can i do in those cities?
+Expected Answer: A list of about 10 countries
+Actual Answer: You can visit Bratislava, Budapest, and Lisbon in Europe. In Bratislava, you can take the Post Communist Tour with Authentic Slovakia, which is highly recommended [1]. Budapest is another interesting and safe Eastern European city to visit, where you can walk across the Széchenyi Chain Bridge, visit Memento Park, and explore ruin bars like Szimpla Kert [2]. In Lisbon, you can join a free walking tour to get familiar with the city, explore its stunning architecture, and visit charming neighborhoods [3]. 
+
 
 Question 4
 Question: Could you give me an itenerary for naviagting Ghana for the first time
 Expected Answer: Should refuse to answer or give an incorrect answer
+Actual Answer: I don't have enough information on that.
 
 Question 5
 Question: Can i do a solo trip while traveling with someone
 Expected Answer: Yes, mention artcile about "Solo Travel Together"
+Actual Answer: I don't have enough information on that.
 
 
 
@@ -174,8 +180,10 @@ Generation
 **Milestone 3 — Ingestion and chunking:**
 - I plan to use Copilot to Implement the Ingestion.py file that reads the files from the documents, chunks it and returns it for embedding. I plan on using the chunking strategy and diagram from the planning.md file. I expect it to produce a fully functioning class for chucking documents. I will verfiy the output matches my spec by asking it to generate 10 random chucks and seeing if what is generated natches my spec.
 
-
 **Milestone 4 — Embedding and retrieval:**
+- I plan to use Copilot to implement `Embeddings.py` that creates a persistent Chroma client (`chromadb.PersistentClient(path=...)`), configures `SentenceTransformerEmbeddingFunction(model_name='all-MiniLM-L6-v2')`, and exposes `get_collection()`, `embed_and_store(chunks)`, and `retrieve(query, n_results)`. It should persist `metadata` (`file_name`, `chunk_index`, `start_token`, `end_token`) and include a small CLI/snippet to bulk-embed flattened chunks from `ingest_documents()`. I will verify this by running a script in the project venv that ingests documents, calls `embed_and_store(...)`, asserts `get_collection().count() > 0`, calls `retrieve(test_query, n_results=4)` and inspects returned items.
 
 
 **Milestone 5 — Generation and interface:**
+- I plan to use Copilot to implement `generation.py`, `query.py`, and `app.py`. `generation.py` will implement a strict grounding `SYSTEM_PROMPT`, `format_context(chunks)`, and `generate_answer(query, chunks)` that calls the LLM client. `query.py` will glue ingestion→embedding→retrieval→generation with `ensure_indexed()` and return `{answer, sources}` where `sources` are derived programmatically from retrieved chunk metadata. `app.py` will be a Gradio UI that accepts a question, calls `query.ask()`, and displays the answer and deduplicated source filenames. I will verify by installing dependencies in the venv, confirm in-scope queries return grounded answers and out-of-scope queries return "I don't have enough information on that.", and launching the Gradio app to manually exercise the UI.
+

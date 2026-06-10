@@ -47,13 +47,13 @@
      - Any preprocessing you did before chunking (e.g., stripping HTML, removing headers)
      - What your final chunk count was across all documents -->
 
-**Chunk size:**
+**Chunk size:** 100
 
-**Overlap:**
+**Overlap:** 25
 
-**Why these choices fit your documents:**
+**Why these choices fit your documents:** My documents are a collections of articles and short reddit posts, which means the chunk need to be small enough to accomodate the reddit posts but also large enough to contain semantic chunks from the articles. Started with 200, realized the chunks were way too large and reduced by half.
 
-**Final chunk count:**
+**Final chunk count:** 147
 
 ---
 
@@ -65,10 +65,23 @@
      Consider: context length limits, multilingual support, accuracy on domain-specific text,
      latency, and local vs. API-hosted. -->
 
-**Model used:**
-
+**Model used:** 
+all-MiniLM-L6-v2
 **Production tradeoff reflection:**
-
+- **Accuracy vs cost:** If cost wasn't a constraint, I'd choose a higher-capacity
+     model (e.g., `all-mpnet-base-v2` or a large commercial embedding like
+     `text-embedding-3-large`) for better semantic matching on domain-specific text.
+- **Context length:** For very long documents, prioritize chunking and retrieval
+     strategy (larger chunks, overlap) or use models that support longer contexts.
+- **Multilingual support:** Use multilingual embeddings (LaBSE, multilingual MPNet)
+     if content or users are multilingual.
+- **Latency & storage:** Larger embeddings increase latency, storage, and index
+     size; balance with approximate nearest neighbor settings (HNSW/FAISS) and
+     possible hybrid retrieval (cheap model for recall + expensive model for rerank).
+- **Recommendation:** Start with `all-MiniLM-L6-v2` for development, evaluate
+     retrieval quality on held-out Q&A, and upgrade to a higher-capacity or
+     multilingual model if accuracy requirements demand it.
+---
 ---
 
 ## Grounded Generation
@@ -81,9 +94,21 @@
      the mechanism. -->
 
 **System prompt grounding instruction:**
+"You are a solo travel assistant.
+
+You must answer using only the provided context.
+Do not use outside knowledge.
+Do not guess, infer facts not present, or invent details.
+
+If the context does not contain enough information to answer the question, you must respond with exactly:
+I don't have enough information on that.
+
+Return only the answer text. Each Answer must include at least 1 source citation in the answer.
+"""
+
 
 **How source attribution is surfaced in the response:**
-
+The UI has a section for where the information is derived and each sentence also has in line citations.
 ---
 
 ## Evaluation Report
@@ -92,39 +117,49 @@
      Be honest — a partially accurate or inaccurate result that you explain well is more
      valuable than a suspiciously perfect result. -->
 
-| # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
-|---|----------|-----------------|------------------------------|-------------------|-------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+-### Question 1
+- Question: How should I chose where to travel
+- Expected answer: Pick based on interests, timeframe, budget; list places by interest
+- System response: When choosing where to travel, consider your interests and personal attributes, as well as your timeframe and budget (r_solotravel's Introduction to Basic Trip Planning.txt). You can also look to popular guidebook series like Lonely Planet, the Rough Guide, and Rick Steves' Europe for recommended itineraries (r_solotravel's Introduction to Basic Trip Planning.txt). Additionally, consider your hobbies, skills you'd like to learn, historical events or cultural practices you're interested in, and cuisine you'd like to try (r_solotravel's Introduction to Basic Trip Planning.txt). It's also a good idea to be conservative with your first trip and consider the safety of the area, as the author of Solo travel - Zimbabwe & Zambia.txt advises against visiting certain areas alone. (Sources: `r_solotravel's Introduction to Basic Trip Planning.txt`, `Solo travel - Zimbabwe & Zambia.txt`)
+- Retrieval quality: Relevant
+- Response accuracy: Partially accurate
 
-**Retrieval quality:** Relevant / Partially relevant / Off-target  
-**Response accuracy:** Accurate / Partially accurate / Inaccurate
+-### Question 2
+- Question: What are some things I can do in Japan?
+- Expected answer: Include visiting spots mentioned in the articles (e.g., Shibuya, Shinjuku)
+- System response: In Japan, some things you can do include visiting spots like Shibuya, Shinjuku, and Ikebukuro, as mentioned in [Source: 17 Best Solo Travel Destinations Worldwide.txt]. Additionally, you can try the local cuisine, explore the efficient transportation system, and experience the respectful and polite culture, as noted in the same source. However, for more specific and unusual activities, the provided documents do not offer detailed information about Japan. (Source: `17 Best Solo Travel Destinations Worldwide.txt`)
+- Retrieval quality: Relevant
+- Response accuracy: Partially accurate
 
----
+-### Question 3
+- Question: What cities can I visit in Europe and what can I do in those cities?
+- Expected answer: Provide a list of ~10 cities and activities
+- System response: You can visit Bratislava, Budapest, and Lisbon in Europe. In Bratislava, you can take the Post Communist Tour with Authentic Slovakia, which is highly recommended [1]. Budapest is another interesting and safe Eastern European city to visit, where you can walk across the Széchenyi Chain Bridge, visit Memento Park, and explore ruin bars like Szimpla Kert [2]. In Lisbon, you can join a free walking tour to get familiar with the city, explore its stunning architecture, and visit charming neighborhoods [3]. (Source: `17 Best Solo Travel Destinations Worldwide.txt`)
+- Retrieval quality: Relevant
+- Response accuracy: Partially accurate
 
-## Failure Case Analysis
+-### Question 4
+- Question: Could you give me an itinerary for navigating Ghana for the first time?
+- Expected answer: Should refuse or give an incorrect answer
+- System response: I don't have enough information on that.
+- Retrieval quality: Off-target
+- Response accuracy: Accurate
 
-<!-- Identify at least one question where retrieval or generation did not work as expected.
-     Write a specific explanation of *why* it failed, tied to a part of the pipeline.
+-### Question 5
+- Question: Can I do a solo trip while traveling with someone?
+- Expected answer: Yes — mention the article about "Solo Travel, Together"
+- System response: I don't have enough information on that.
+- Retrieval quality: Off-target
+- Response accuracy: Inaccurate
 
-     "The answer was wrong" is not an explanation.
 
-     "The relevant information was split across a chunk boundary, so retrieval returned
-     only half the context — the model didn't have enough to answer correctly" is an explanation.
+**Question that failed:** Can I do a solo trip while traveling with someone?
 
-     "The embedding model treated the professor's nickname as out-of-vocabulary and returned
-     results from an unrelated review" is an explanation. -->
+**What the system returned:** I don't have enough information on that.
 
-**Question that failed:**
+**Root cause (tied to a specific pipeline stage):** There are two likely causes. First, the documents contains very little explicit content about "solo travel while traveling with someone," so retrieval had few or no high-relevance chunks to surface. Second, the semantic relationship between the query and the available document (`"Solo Travel, Together"`) was not captured strongly enough by the embedding/retrieval stage.
 
-**What the system returned:**
-
-**Root cause (tied to a specific pipeline stage):**
-
-**What you would change to fix it:**
+**What you would change to fix it:** Add more targeted documents and forum posts that discuss doing "solo" activities while traveling with others (so the index contains direct matches), and upgrade or experiment with a stronger embedding model.
 
 ---
 
@@ -134,8 +169,9 @@
      Answer both questions with at least 2–3 sentences each. -->
 
 **One way the spec helped you during implementation:**
-
+The spec helped with implementation because i was able to get the LLM to produce the code without having to reprompt many times. Also when I decided to change my mind about the implementation method. I could just make the LLM refer to the changes in the spec
 **One way your implementation diverged from the spec, and why:**
+I noticed that for the implementation of the embedding.py, the spec wasn't very specific so I had to do alot of debugging to figure out what was wrong. Eventually, I used the starter code from the tinker lab to help guide the LLM in the right direction
 
 ---
 
@@ -152,12 +188,12 @@
 
 **Instance 1**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
+- *What I gave the AI:* My `planning.md` file and my documents folder, and examples of how I wanted the AI Tool Plan written.
+- *What it produced:* It helped gave me a more specific chunking plan for the solo travel corpus.
+- *What I changed or overrode:* I made the document paths consistent and readjusted the formatting.
 
 **Instance 2**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
+- *What I gave the AI:* My chunking spec from `planning.md` and the sample document set, along with the requirement to implement `Ingestion.py`.
+- *What it produced:* It produced an ingestion pipeline that reads the documents, tokenizes them, splits them into overlapping chunks, and returns chunk data that can be embedded later.
+- *What I changed or overrode:* I kept the basic ingestion flow but refined the output shape and chunk metadata so it fit my project better, and I asked for smaller chunks with overlap after seeing that the original chunking was mixing multiple topics together.
